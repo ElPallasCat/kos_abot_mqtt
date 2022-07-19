@@ -1,0 +1,6 @@
+entities:
+
+- name: forte.Forte
+@INIT_Forte_ENTITY_CONNECTIONS@
+
+@INIT_EXTERNAL_ENTITIES@
