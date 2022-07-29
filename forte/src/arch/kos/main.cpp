@@ -53,25 +53,6 @@
 #endif
 
 
-const int exceptionPinArr[] = {14, 15};
-
-static bool IsExceptionPin(int pin)
-{
-    bool ret = false;
-
-    for(int i = 0; i < sizeof(exceptionPinArr) / sizeof(int); i++)
-    {
-        if(exceptionPinArr[i] == pin)
-        {
-            ret = true;
-
-            break;
-        }
-    }
-
-    return ret;
-}
-
 /*!\brief Check if the correct endianess has been configured.
  *
  * If the right endianess is not set this function will end FORTE.
@@ -136,13 +117,6 @@ void FileReadTest()
     userListFile.close();
 }
 
-void gpio_set_mode(GpioHandle handle, int pin){
-  if (GpioSetMode(handle, pin, GPIO_DIR_OUT)){
-    printf("GpioSetMode for GPIO%d failed\n", pin);
-    exit(-1);
-  }
-}
-
 int main(int argc, char *arg[]){
 
     // GPIO working start
@@ -186,115 +160,7 @@ int main(int argc, char *arg[]){
     }
 
 
-    // initialize and setup gpio0 port 
-    GpioHandle handle = NULL;
-    if (GpioOpenPort("gpio0", &handle) || handle == GPIO_INVALID_HANDLE)
-    {
-        fprintf(stderr, "GpioOpenPort failed\n");
-        return EXIT_FAILURE;
-    }
-
-  int in1 = 12;
-  int in2 = 13;
-  int in3 = 20;
-  int in4 = 21;
-  int ena = 6;
-  int enb = 26;
-
-  /* initialize and setup gpio0 port */
-  
-  if (GpioOpenPort("gpio0", &handle) || handle == GPIO_INVALID_HANDLE)
-  {
-    printf("GpioOpenPort failed\n");
-    exit(-1);
-  }
-  else{
-    printf("GpioOpenPort Ok\n");
-  }
-
-  gpio_set_mode(handle, in1);
-  gpio_set_mode(handle, in2);
-  gpio_set_mode(handle, in3);
-  gpio_set_mode(handle, in4);
-  gpio_set_mode(handle, ena);
-  gpio_set_mode(handle, enb);
-
-    GpioOut(handle, in1, 1);
-    GpioOut(handle, in2, 0);
-    GpioOut(handle, in3, 0);
-    GpioOut(handle, in4, 1);
-    sleep(2);
-    //set_stop(handle, in1, in2, in3, in4);
-    GpioOut(handle, in1, 0);
-    GpioOut(handle, in2, 0);
-    GpioOut(handle, in3, 0);
-    GpioOut(handle, in4, 0);
-
-    /*for(int j = 0; j < GPIO_PIN_NUM; j++)
-    {
-        if(!IsExceptionPin(j))
-        {
-            if (GpioSetMode(handle, j, GPIO_DIR_OUT))
-            {
-                fprintf(stderr, "GpioSetMode for GPIO%d failed\n", j);
-                return -1;
-            }
-        }
-    }
-
-    for(int j = 0; j < GPIO_PIN_NUM - 1; j++)
-    {
-        if(!IsExceptionPin(j))
-        {
-            if (GpioOut(handle, j, 1))
-            {
-                fprintf(stderr, "GpioOut 1 for GPIO%d failed\n", j);
-                return -1;
-            }
-
-            fprintf(stderr, "GPIO%d is set to 1\n", j);
-            sleep(DELAY_S);
-
-            if (GpioOut(handle, j, 0))
-            {
-                fprintf(stderr, "GpioOut 0 for GPIO%d failed\n", j);
-                return -1;
-            }
-
-            fprintf(stderr, "GPIO%d is set to 0\n", j);
-        }
-    }
-
-    for(int j = GPIO_PIN_NUM - 1; j >= 0; j--)
-    {
-        if(!IsExceptionPin(j))
-        {
-            if (GpioOut(handle, j, 1))
-            {
-                fprintf(stderr, "GpioOut 1 for GPIO%d failed\n", j);
-                return -1;
-            }
-
-            fprintf(stderr, "GPIO%d is set to 1\n", j);
-            sleep(DELAY_S);
-
-            if (GpioOut(handle, j, 0))
-            {
-                fprintf(stderr, "GpioOut 0 for GPIO%d failed\n", j);
-                return -1;
-            }
-
-            fprintf(stderr, "GPIO%d is set to 0\n", j);
-        }
-    }*/
-
-    if(GpioClosePort(handle))
-    {
-        fprintf(stderr, "GpioClosePort failed\n");
-        return EXIT_FAILURE;
-    }
-
-    fprintf(stderr, "Test finished.\n");
+    
     //// GPIO working end
 
 
