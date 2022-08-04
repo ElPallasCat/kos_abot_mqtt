@@ -42,146 +42,12 @@ const SFBInterfaceSpec FORTE_FB_ABOT_ENGINE::scm_stFBInterfaceSpec = {
   0, nullptr
 };
 
-
-/*void gpio_set_mode(GpioHandle handle, int pin){
-  if (GpioSetMode(handle, pin, GPIO_DIR_OUT)){
-    printf("GpioSetMode for GPIO%d failed\n", pin);
-    exit(-1);
-  }
-}
-
-
-void set_stop(GpioHandle handle, int in1, int in2, int in3, int in4){
-  // code: in1,in2,in3,in4 = 0,0,0,0
-  if (GpioOut(handle, in1, 0)){
-    printf("GpioOut set failed\n");
-    exit(-1);
-  }
-  if (GpioOut(handle, in2, 0)){
-    printf("GpioOut set failed\n");
-    exit(-1);
-  }
-  if (GpioOut(handle, in3, 0)){
-    printf("GpioOut set failed\n");
-    exit(-1);
-  }
-  if (GpioOut(handle, in4, 0)){
-    printf("GpioOut set failed\n");
-    exit(-1);
-  }
-}
-
-
-void set_forward(GpioHandle handle, int in1, int in2, int in3, int in4){
-  // code: in1,in2,in3,in4 = 1,0,0,1
-  if (GpioOut(handle, in1, 1)){
-    printf("GpioOut set failed\n");
-    exit(-1);
-  }
-  if (GpioOut(handle, in2, 0)){
-    printf("GpioOut set failed\n");
-    exit(-1);
-  }
-  if (GpioOut(handle, in3, 0)){
-    printf("GpioOut set failed\n");
-    exit(-1);
-  }
-  if (GpioOut(handle, in4, 1)){
-    printf("GpioOut set failed\n");
-    exit(-1);
-  }
-}
-
-
-void set_back(GpioHandle handle, int in1, int in2, int in3, int in4){
-  // code: in1,in2,in3,in4 = 0,1,1,0
-  if (GpioOut(handle, in1, 0)){
-    printf("GpioOut set failed\n");
-    exit(-1);
-  }
-  if (GpioOut(handle, in2, 1)){
-    printf("GpioOut set failed\n");
-    exit(-1);
-  }
-  if (GpioOut(handle, in3, 1)){
-    printf("GpioOut set failed\n");
-    exit(-1);
-  }
-  if (GpioOut(handle, in4, 0)){
-    printf("GpioOut set failed\n");
-    exit(-1);
-  }
-}
-
-
-void set_left(GpioHandle handle, int in1, int in2, int in3, int in4){
-  // code: in1,in2,in3,in4 = 0,0,0,1
-  if (GpioOut(handle, in1, 0)){
-    printf("GpioOut set failed\n");
-    exit(-1);
-  }
-  if (GpioOut(handle, in2, 0)){
-    printf("GpioOut set failed\n");
-    exit(-1);
-  }
-  if (GpioOut(handle, in3, 0)){
-    printf("GpioOut set failed\n");
-    exit(-1);
-  }
-  if (GpioOut(handle, in4, 1)){
-    printf("GpioOut set failed\n");
-    exit(-1);
-  }
-}
-
-
-void set_right(GpioHandle handle, int in1, int in2, int in3, int in4){
-  // code: in1,in2,in3,in4 = 1,0,0,0
-  if (GpioOut(handle, in1, 1)){
-    printf("GpioOut set failed\n");
-    exit(-1);
-  }
-  if (GpioOut(handle, in2, 0)){
-    printf("GpioOut set failed\n");
-    exit(-1);
-  }
-  if (GpioOut(handle, in3, 0)){
-    printf("GpioOut set failed\n");
-    exit(-1);
-  }
-  if (GpioOut(handle, in4, 0)){
-    printf("GpioOut set failed\n");
-    exit(-1);
-  }
-}
-
-void gpio_motor_on(GpioHandle handle, int ena, int enb){
-  if (GpioOut(handle, ena, 1)){
-    printf("GpioOut set failed\n");
-    exit(-1);
-  }
-  if (GpioOut(handle, enb, 1)){
-    printf("GpioOut set failed\n");
-    exit(-1);
-  }
-}
-
-void gpio_motor_off(GpioHandle handle, int ena, int enb){
-  if (GpioOut(handle, ena, 0)){
-    printf("GpioOut set failed\n");
-    exit(-1);
-  }
-  if (GpioOut(handle, enb, 0)){
-    printf("GpioOut set failed\n");
-    exit(-1);
-  }
-}*/
-
 void stop(){
     GpioOut(handle, 12, 0);
     GpioOut(handle, 13, 0);
     GpioOut(handle, 20, 0);
     GpioOut(handle, 21, 0);
+    printf("FB tell: Stop\n");
 }
 
 void forward(){
@@ -189,6 +55,7 @@ void forward(){
     GpioOut(handle, 13, 0);
     GpioOut(handle, 20, 0);
     GpioOut(handle, 21, 1);
+    printf("FB tell: Forward\n");
 }
 
 void back(){
@@ -196,6 +63,7 @@ void back(){
     GpioOut(handle, 13, 1);
     GpioOut(handle, 20, 1);
     GpioOut(handle, 21, 0);
+    printf("FB tell: Back\n");
 }
 
 void turn_left(){
@@ -203,6 +71,7 @@ void turn_left(){
     GpioOut(handle, 13, 0);
     GpioOut(handle, 20, 0);
     GpioOut(handle, 21, 1);
+    printf("FB tell: Turn left\n");
 }
 
 void turn_right(){
@@ -210,16 +79,18 @@ void turn_right(){
     GpioOut(handle, 13, 0);
     GpioOut(handle, 20, 0);
     GpioOut(handle, 21, 0);
+    printf("FB tell: Turn right\n");
 }
 
 
 void FORTE_FB_ABOT_ENGINE::alg_REQ(void) {
   int int_cmd = CMD();
   int duration = DURATION();
+  //printf("%d\n", duration);
 
-  int dur_in_sec = int(duration*1000);
-  //printf("dur_in_sec\n"); 
-  //printf("%d\n", dur_in_sec); 
+  int dur_in_mksec = int(duration*1000);
+  float dur_in_sec = float(duration/1000);
+  //printf("%d\n", dur_in_mksec);
 
   /*int in1 = 12;
   int in2 = 13;
@@ -240,15 +111,6 @@ void FORTE_FB_ABOT_ENGINE::alg_REQ(void) {
     printf("GpioOpenPort Ok\n");
   }
 
-  /*gpio_set_mode(handle, in1);
-  gpio_set_mode(handle, in2);
-  gpio_set_mode(handle, in3);
-  gpio_set_mode(handle, in4);
-  gpio_set_mode(handle, ena);
-  gpio_set_mode(handle, enb);
-
-  gpio_motor_on(handle, ena, enb);*/
-
   GpioSetMode(handle, 12, GPIO_DIR_OUT);
   GpioSetMode(handle, 13, GPIO_DIR_OUT);
   GpioSetMode(handle, 20, GPIO_DIR_OUT);
@@ -261,43 +123,37 @@ void FORTE_FB_ABOT_ENGINE::alg_REQ(void) {
 
   switch (int_cmd) { 
   case 0:
-    printf("stop\n"); 
-
     stop();
-    usleep(dur_in_sec);
+    sleep(dur_in_sec);
+    //usleep(dur_in_mksec);
     stop();
     break; 
 
   case 1: 
-    printf("moving forward\n");
-
     forward();
-    usleep(dur_in_sec);
+    sleep(dur_in_sec);
+    //usleep(dur_in_mksec);
     stop();
-    printf("moving forward OK\n");
     break; 
 
   case 2: 
-    printf("moving back\n");
-
     back();
-    usleep(dur_in_sec);
+    sleep(dur_in_sec);
+    //usleep(dur_in_mksec);
     stop();
     break; 
 
   case 3:  
-    printf("rotate left\n"); 
-
     turn_left();
-    usleep(dur_in_sec);
+    sleep(dur_in_sec);
+    //usleep(dur_in_mksec);
     stop();
     break; 
 
   case 4:  
-    printf("rotate right\n");
-
     turn_right();
-    usleep(dur_in_sec);
+    sleep(dur_in_sec);
+    //usleep(dur_in_mksec);
     stop();
     break;
 
@@ -306,12 +162,13 @@ void FORTE_FB_ABOT_ENGINE::alg_REQ(void) {
     exit(1);
   }
 
-  //gpio_motor_off(handle, ena, enb);
-
   if(GpioClosePort(handle))
   {
     printf("GpioClosePort failed\n");
     exit(-1);
+  }
+  else{
+    printf("GpioClosePort Ok\n");
   }
 }
 
