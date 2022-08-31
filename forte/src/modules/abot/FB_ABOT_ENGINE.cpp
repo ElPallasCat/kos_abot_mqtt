@@ -86,11 +86,11 @@ void turn_right(){
 void FORTE_FB_ABOT_ENGINE::alg_REQ(void) {
   int int_cmd = CMD();
   int duration = DURATION();
-  //printf("%d\n", duration);
+  printf("%d\n", duration);
 
   int dur_in_mksec = int(duration*1000);
   float dur_in_sec = float(duration/1000);
-  //printf("%d\n", dur_in_mksec);
+  printf("%f\n", dur_in_sec);
 
   /*int in1 = 12;
   int in2 = 13;
@@ -109,6 +109,7 @@ void FORTE_FB_ABOT_ENGINE::alg_REQ(void) {
   }
   else{
     printf("GpioOpenPort Ok\n");
+    fprintf(stderr, "%d\n", handle);
   }
 
   GpioSetMode(handle, 12, GPIO_DIR_OUT);
@@ -124,35 +125,40 @@ void FORTE_FB_ABOT_ENGINE::alg_REQ(void) {
   switch (int_cmd) { 
   case 0:
     stop();
-    sleep(dur_in_sec);
+    //sleep(dur_in_sec);
+    sleep(0.9);
     //usleep(dur_in_mksec);
     stop();
     break; 
 
   case 1: 
     forward();
-    sleep(dur_in_sec);
+    //sleep(dur_in_sec);
+    sleep(0.9);
     //usleep(dur_in_mksec);
     stop();
     break; 
 
   case 2: 
     back();
-    sleep(dur_in_sec);
+    //sleep(dur_in_sec);
+    sleep(0.9);
     //usleep(dur_in_mksec);
     stop();
     break; 
 
   case 3:  
     turn_left();
-    sleep(dur_in_sec);
+    //sleep(dur_in_sec);
+    sleep(0.9);
     //usleep(dur_in_mksec);
     stop();
     break; 
 
   case 4:  
     turn_right();
-    sleep(dur_in_sec);
+    //sleep(dur_in_sec);
+    sleep(0.9);
     //usleep(dur_in_mksec);
     stop();
     break;
@@ -161,6 +167,9 @@ void FORTE_FB_ABOT_ENGINE::alg_REQ(void) {
     printf("error cmd code\n");
     exit(1);
   }
+
+  GpioOut(handle, 6, 0);
+  GpioOut(handle, 26, 0);
 
   if(GpioClosePort(handle))
   {
