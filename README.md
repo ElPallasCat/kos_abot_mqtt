@@ -9,9 +9,7 @@ Before you begin, ensure that you have met the following requirements:
 
 ### Usage
 To build the example and run the resulting image use the cross-build.sh script.
-Expected output:
-
-![plot](1.png)
+Expected output see on 1.png
 
 ### Authors
 Developed by: Slava Bogomolov  
