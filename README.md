@@ -11,9 +11,7 @@ Before you begin, ensure that you have met the following requirements:
 To build the example and run the resulting image use the cross-build.sh script.
 Expected output:
 
-```
-Add later
-```
+![plot](1.png)
 
 ### Authors
 Developed by: Slava Bogomolov  
