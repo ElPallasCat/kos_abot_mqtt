@@ -12,6 +12,8 @@
 #include "FB_ABOT_ENGINE.h"
 #include <unistd.h>
 #include "stdio.h"
+#include <chrono>
+#include <thread>
 #ifdef FORTE_ENABLE_GENERATED_SOURCE_CPP
 #include "FB_ABOT_ENGINE_gen.cpp"
 #endif
@@ -47,7 +49,6 @@ void stop(){
     GpioOut(handle, 13, 0);
     GpioOut(handle, 20, 0);
     GpioOut(handle, 21, 0);
-    printf("FB tell: Stop\n");
 }
 
 void forward(){
@@ -55,7 +56,6 @@ void forward(){
     GpioOut(handle, 13, 0);
     GpioOut(handle, 20, 0);
     GpioOut(handle, 21, 1);
-    printf("FB tell: Forward\n");
 }
 
 void back(){
@@ -63,7 +63,6 @@ void back(){
     GpioOut(handle, 13, 1);
     GpioOut(handle, 20, 1);
     GpioOut(handle, 21, 0);
-    printf("FB tell: Back\n");
 }
 
 void turn_left(){
@@ -71,7 +70,6 @@ void turn_left(){
     GpioOut(handle, 13, 0);
     GpioOut(handle, 20, 0);
     GpioOut(handle, 21, 1);
-    printf("FB tell: Turn left\n");
 }
 
 void turn_right(){
@@ -79,18 +77,25 @@ void turn_right(){
     GpioOut(handle, 13, 0);
     GpioOut(handle, 20, 0);
     GpioOut(handle, 21, 0);
-    printf("FB tell: Turn right\n");
 }
+
+/*unsigned int ms2sec(unsigned int ms){
+float sec = 0.0;
+
+}*/
 
 
 void FORTE_FB_ABOT_ENGINE::alg_REQ(void) {
   int int_cmd = CMD();
-  int duration = DURATION();
-  printf("%d\n", duration);
+  unsigned int duration = DURATION();
+  //printf("%d\n", duration);
 
-  int dur_in_mksec = int(duration*1000);
-  float dur_in_sec = float(duration/1000);
-  printf("%f\n", dur_in_sec);
+  //int dur_in_mksec = int(duration*1000);
+  //printf("%d\n", dur_in_mksec);
+  //float dur_in_sec = float(duration/1000);
+  //printf("%f\n", dur_in_sec);
+
+  //std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
   /*int in1 = 12;
   int in2 = 13;
@@ -125,41 +130,31 @@ void FORTE_FB_ABOT_ENGINE::alg_REQ(void) {
   switch (int_cmd) { 
   case 0:
     stop();
-    //sleep(dur_in_sec);
-    sleep(0.9);
-    //usleep(dur_in_mksec);
+    std::this_thread::sleep_for(std::chrono::milliseconds(duration));
     stop();
     break; 
 
   case 1: 
     forward();
-    //sleep(dur_in_sec);
-    sleep(0.9);
-    //usleep(dur_in_mksec);
+    std::this_thread::sleep_for(std::chrono::milliseconds(duration));
     stop();
     break; 
 
   case 2: 
     back();
-    //sleep(dur_in_sec);
-    sleep(0.9);
-    //usleep(dur_in_mksec);
+    std::this_thread::sleep_for(std::chrono::milliseconds(duration));
     stop();
     break; 
 
   case 3:  
     turn_left();
-    //sleep(dur_in_sec);
-    sleep(0.9);
-    //usleep(dur_in_mksec);
+    std::this_thread::sleep_for(std::chrono::milliseconds(duration));
     stop();
     break; 
 
   case 4:  
     turn_right();
-    //sleep(dur_in_sec);
-    sleep(0.9);
-    //usleep(dur_in_mksec);
+    std::this_thread::sleep_for(std::chrono::milliseconds(duration));
     stop();
     break;
 
