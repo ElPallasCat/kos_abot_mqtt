@@ -8,8 +8,8 @@ Before you begin, ensure that you have met the following requirements:
 - You have Debian GNU/Linux "Buster" 10.7
 
 ### Usage
-To build the example and run the resulting image use the cross-build.sh script.
-Expected output see on 1.png
+To build the example and run the resulting image use the cross-build.sh script.  
+Expected output see on 1.png and 2.png
 
 ### Authors
 Developed by: Slava Bogomolov  

@@ -49,6 +49,7 @@ void stop(){
     GpioOut(handle, 13, 0);
     GpioOut(handle, 20, 0);
     GpioOut(handle, 21, 0);
+    printf("stop\n");
 }
 
 void forward(){
@@ -56,6 +57,7 @@ void forward(){
     GpioOut(handle, 13, 0);
     GpioOut(handle, 20, 0);
     GpioOut(handle, 21, 1);
+    printf("move forward\n");
 }
 
 void back(){
@@ -63,6 +65,7 @@ void back(){
     GpioOut(handle, 13, 1);
     GpioOut(handle, 20, 1);
     GpioOut(handle, 21, 0);
+    printf("move back\n");
 }
 
 void turn_left(){
@@ -70,6 +73,7 @@ void turn_left(){
     GpioOut(handle, 13, 0);
     GpioOut(handle, 20, 0);
     GpioOut(handle, 21, 1);
+    printf("turn left\n");
 }
 
 void turn_right(){
@@ -77,6 +81,7 @@ void turn_right(){
     GpioOut(handle, 13, 0);
     GpioOut(handle, 20, 0);
     GpioOut(handle, 21, 0);
+    printf("turn right\n");
 }
 
 /*unsigned int ms2sec(unsigned int ms){
@@ -114,7 +119,6 @@ void FORTE_FB_ABOT_ENGINE::alg_REQ(void) {
   }
   else{
     printf("GpioOpenPort Ok\n");
-    fprintf(stderr, "%d\n", handle);
   }
 
   GpioSetMode(handle, 12, GPIO_DIR_OUT);
@@ -173,6 +177,7 @@ void FORTE_FB_ABOT_ENGINE::alg_REQ(void) {
   }
   else{
     printf("GpioClosePort Ok\n");
+    printf("-----------------------------\n");
   }
 }
 
