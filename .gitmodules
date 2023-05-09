@@ -1,0 +1,3 @@
+[submodule "forte_app_examples"]
+	path = forte_app_examples
+	url = https://github.com/alekseym/forte_app_examples.git
