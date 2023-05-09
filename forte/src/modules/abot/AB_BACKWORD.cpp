@@ -14,6 +14,8 @@
 #include "AB_BACKWORD_gen.cpp"
 #endif
 
+#include "gpioutils.h"
+
 
 DEFINE_FIRMWARE_FB(FORTE_AB_BACKWORD, g_nStringIdAB_BACKWORD)
 
@@ -57,6 +59,8 @@ void FORTE_AB_BACKWORD::executeEvent(int pa_nEIID){
     bTransitionCleared = true;
     switch(m_nECCState) {
       case scm_nStateSTART:
+	      unsigned int duration = DURATION();
+          ABotEngines::instance()->back(duration); 
           bTransitionCleared  = false; //no transition cleared
         break;
       default:

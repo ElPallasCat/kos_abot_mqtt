@@ -14,6 +14,7 @@
 #include "AB_FORWARD_gen.cpp"
 #endif
 
+#include "gpioutils.h"
 
 DEFINE_FIRMWARE_FB(FORTE_AB_FORWARD, g_nStringIdAB_FORWARD)
 
@@ -57,6 +58,8 @@ void FORTE_AB_FORWARD::executeEvent(int pa_nEIID){
     bTransitionCleared = true;
     switch(m_nECCState) {
       case scm_nStateSTART:
+	      unsigned int duration = DURATION();
+          ABotEngines::instance()->forward(duration); 
           bTransitionCleared  = false; //no transition cleared
         break;
       default:

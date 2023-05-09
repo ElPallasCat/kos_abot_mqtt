@@ -14,6 +14,7 @@
 #include "AB_RIGHT_gen.cpp"
 #endif
 
+#include "gpioutils.h"
 
 DEFINE_FIRMWARE_FB(FORTE_AB_RIGHT, g_nStringIdAB_RIGHT)
 
@@ -57,6 +58,8 @@ void FORTE_AB_RIGHT::executeEvent(int pa_nEIID){
     bTransitionCleared = true;
     switch(m_nECCState) {
       case scm_nStateSTART:
+	      unsigned int duration = DURATION();
+          ABotEngines::instance()->right(duration); 
           bTransitionCleared  = false; //no transition cleared
         break;
       default:

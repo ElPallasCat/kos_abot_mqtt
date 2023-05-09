@@ -14,6 +14,8 @@
 #include "AB_LEFT_gen.cpp"
 #endif
 
+#include "gpioutils.h"
+
 
 DEFINE_FIRMWARE_FB(FORTE_AB_LEFT, g_nStringIdAB_LEFT)
 
@@ -57,6 +59,8 @@ void FORTE_AB_LEFT::executeEvent(int pa_nEIID){
     bTransitionCleared = true;
     switch(m_nECCState) {
       case scm_nStateSTART:
+	      unsigned int duration = DURATION();
+          ABotEngines::instance()->left(duration); 
           bTransitionCleared  = false; //no transition cleared
         break;
       default:

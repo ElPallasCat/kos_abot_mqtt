@@ -14,6 +14,7 @@
 #include "AB_STOP_gen.cpp"
 #endif
 
+#include "gpioutils.h"
 
 DEFINE_FIRMWARE_FB(FORTE_AB_STOP, g_nStringIdAB_STOP)
 
@@ -57,6 +58,8 @@ void FORTE_AB_STOP::executeEvent(int pa_nEIID){
     bTransitionCleared = true;
     switch(m_nECCState) {
       case scm_nStateSTART:
+	  	  unsigned int duration = DURATION();
+          ABotEngines::instance()->stop(); 
           bTransitionCleared  = false; //no transition cleared
         break;
       default:
