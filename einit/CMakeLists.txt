@@ -3,49 +3,110 @@ project (einit)
 # Tools for using NK parser.
 include (platform/image)
 
+
 # Set compile flags.
 project_header_default ("STANDARD_GNU_11:YES" "STRICT_WARNINGS:NO")
 
-if ("${CMAKE_SYSTEM_PROCESSOR}" MATCHES "arm|aarch64")
-    # Add package importing components for working with SD card.
-    find_package (sdcard REQUIRED)
-    include_directories (${sdcard_INCLUDE})
+find_program (NTPD_ENTITY
+              NAMES "ntpd" REQUIRED
+              NO_CMAKE_PATH
+              NO_CMAKE_ENVIRONMENT_PATH
+              NO_SYSTEM_ENVIRONMENT_PATH)
 
-    # We need SDCARD driver to be connected with our implementation of VFS
-    set_target_properties (Forte PROPERTIES ${blkdev_ENTITY}_REPLACEMENT ${sdcard_ENTITY})
+			  
+# Define the ENTITIES variable with a list of entities.
+set (ENTITIES 
+     Forte
+     ${precompiled_vfsVfsNet} 
+     ${NTPD_ENTITY} ${rump_DHCPCD_ENTITY})
 
-    # For the Arm architecture only one SD card supported.
-    set (QEMU_FLAGS "-nographic -monitor none -sd hdd.img")
+
+if ("${CMAKE_SYSTEM_PROCESSOR}" MATCHES "aarch64")
+     set (SECURITY_PSL_FILE "src/security.psl")
 else ()
-    # Add package importing components for working with ata device.
-    find_package (ata REQUIRED)
-    include_directories (${ata_INCLUDE})
-
-    # We need ATA driver to be connected with our implementation of VFS
-    set_target_properties (Forte PROPERTIES ${blkdev_ENTITY}_REPLACEMENT ${ata_ENTITY})
-
-    set (QEMU_FLAGS "-nographic -monitor none \
-                     -device ahci,id=ahci \
-                     -drive id=disk,file=hdd.img,if=none \
-                     -device ide-drive,drive=disk,bus=ahci.0")
+     message (FATAL_ERROR "${CMAKE_SYSTEM_PROCESSOR} architecture is not supported." )
 endif ()
 
-set (SECURITY_PSL_FILE "src/security.psl.in")
-set (CONNECTIONS_CFG "src/init.yaml.in")
+if (ROOTFS_SDCARD)
+    set (ROOTFS_ENTITY "kl.VfsSdCardFs")
+    set (FS_BACKEND ${precompiled_vfsVfsSdCardFs})
+    list (APPEND ENTITIES ${precompiled_vfsVfsSdCardFs})
+else()
+    set (ROOTFS_ENTITY "kl.VfsRamFs")
+    set (FS_BACKEND ${precompiled_vfsVfsRamFs})
+    list (APPEND ENTITIES ${precompiled_vfsVfsRamFs})
+endif()
 
-# KasperskyOS image for target hardware platform.
+set_target_properties(${FS_BACKEND} PROPERTIES
+    EXTRA_ARGS "\
+    - -l
+    - devfs /dev devfs 0")
+
+# Redefine the DHCPCD program connections.
+set_target_properties (${rump_DHCPCD_ENTITY} PROPERTIES
+    DEPENDS_ON_ENTITY ""
+    EXTRA_CONNECTIONS "\
+  - target: kl.VfsNet
+    id: kl.VfsNet
+  - target: ${ROOTFS_ENTITY}
+    id: ${ROOTFS_ENTITY}"
+    EXTRA_ENV "\
+    VFS_FILESYSTEM_BACKEND: client{fs->net}:${ROOTFS_ENTITY}
+    VFS_NETWORK_BACKEND: client:kl.VfsNet"
+    EXTRA_ARGS "\
+    - '-4'
+    - -f
+    - /etc/dhcpcd.conf")
+
+# Add a target for making and copying the disk image to the example build
+# directory.
+add_custom_command (OUTPUT ramdisk0.img
+                    COMMAND ${CMAKE_COMMAND} -E make_directory
+                        ${CMAKE_BINARY_DIR}/hdd
+                    COMMAND ${CMAKE_COMMAND} -E copy_directory
+                        ${CMAKE_SOURCE_DIR}/resources/ramfs
+                        ${CMAKE_BINARY_DIR}/hdd
+                    COMMAND $ENV{SDK_PREFIX}/common/prepare_hdd_img.sh -d
+                        ${CMAKE_BINARY_DIR}/hdd -img ramdisk0.img -f ext4 -s 128)
+add_custom_target (ramdisk0.img DEPENDS ramdisk0.img)
+
+# Add a target for making and copying the disk image to the example build
+# directory.
+add_custom_command (OUTPUT sdcard0.img
+                    COMMAND ${CMAKE_COMMAND} -E make_directory
+                        ${CMAKE_BINARY_DIR}/hdd
+                    COMMAND ${CMAKE_COMMAND} -E copy_directory
+                        ${CMAKE_SOURCE_DIR}/resources/sdcard
+                        ${CMAKE_BINARY_DIR}/hdd
+                    COMMAND $ENV{SDK_PREFIX}/common/prepare_hdd_img.sh -d
+                        ${CMAKE_BINARY_DIR}/hdd -img sdcard0.img -f fat32)
+add_custom_target (sdcard0.img DEPENDS sdcard0.img)
+
+set (QEMU_FLAGS "-sd sdcard0.img")
+set (SECURITY_PSL_FILE "src/security.psl")
+set (FILES ${CMAKE_BINARY_DIR}/einit/ramdisk0.img)
+
+# KasperskyOS image for the target hardware platform.
 build_kos_hw_image (kos-image
                     EINIT_ENTITY EinitHw
-                    CONNECTIONS_CFG ${CONNECTIONS_CFG}
+                    CONNECTIONS_CFG "src/init.yaml.in"
                     SECURITY_PSL ${SECURITY_PSL_FILE}
-                    IMAGE_FILES Forte)
+                    IMAGE_FILES  ${ENTITIES}
+                                 ${FILES} Forte)
+add_dependencies (kos-image ramdisk0.img)
 
 # KasperskyOS image for QEMU with simulation targets (sim, gdbsim, gdb).
 build_kos_qemu_image (kos-qemu-image
                       EINIT_ENTITY EinitQemu
-                      CONNECTIONS_CFG ${CONNECTIONS_CFG}
+                      CONNECTIONS_CFG "src/init.yaml.in"
                       SECURITY_PSL ${SECURITY_PSL_FILE}
-                      QEMU_FLAGS ${QEMU_FLAGS}
-                      IMAGE_FILES Forte)
+                      QEMU_FLAGS   ${QEMU_FLAGS}
+                      IMAGE_FILES  ${ENTITIES}
+                                   ${CMAKE_BINARY_DIR}/einit/sdcard0.img
+                                   ${FILES} Forte)
+add_dependencies (kos-qemu-image ramdisk0.img sdcard0.img)
+
+et_target_properties (EinitHw PROPERTIES LINK_FLAGS ${VULN_LDFLAGS})
+set_target_properties (EinitQemu PROPERTIES LINK_FLAGS ${VULN_LDFLAGS})
 
 #set_target_properties (EinitQemu PROPERTIES LINK_FLAGS "-Ttext 0x00200000")
