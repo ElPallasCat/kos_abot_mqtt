@@ -14,6 +14,11 @@
 #include "AB_CMDPARSER_gen.cpp"
 #endif
 
+#include "rapidjson/include/rapidjson/document.h"
+#include "rapidjson/include/rapidjson/reader.h"
+//#include "rapidjson/include/rapidjson/filereadstream.h"
+#include <fstream>
+
 
 DEFINE_FIRMWARE_FB(FORTE_AB_CMDPARSER, g_nStringIdAB_CMDPARSER)
 
@@ -57,6 +62,38 @@ void FORTE_AB_CMDPARSER::executeEvent(int pa_nEIID){
     bTransitionCleared = true;
     switch(m_nECCState) {
       case scm_nStateSTART:
+
+	auto source = st_SCMD().getValue();
+	st_QO() = false;
+
+	rapidjson::StringStream sourceStream(source);
+	rapidjson::Document doc;
+	doc.ParseStream(sourceStream);
+
+	if (doc.IsObject())
+		if (doc.HasMember(param))
+			if (doc[param].IsString())
+			{
+			  switch (std::string(doc[param].GetString())) {
+			    case "stop":
+				st_CMD() = 0;
+				st_QO() = true;
+				break;
+			    case "forward":
+				st_CMD() = 1;
+				st_QO() = true;
+				break;
+			    case "left":
+				st_CMD() = 2;
+				st_QO() = true;
+				break;
+			    case "right":
+				st_CMD() = 3;
+				st_QO() = true;
+				break;
+			  }	
+			}
+
           bTransitionCleared  = false; //no transition cleared
         break;
       default:
