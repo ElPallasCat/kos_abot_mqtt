@@ -1,0 +1,5 @@
+entity forte.Forte
+
+components {
+    Forte : forte.NavigationCommand
+}

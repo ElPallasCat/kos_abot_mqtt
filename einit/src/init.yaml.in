@@ -1,16 +1,23 @@
 entities:
 
-- name: forte.Forte
+- name: forte.Client
+  env:
+    VFS_FILESYSTEM_BACKEND: client:@ROOTFS_ENTITY@
+    VFS_NETWORK_BACKEND: client:kl.VfsNet
   connections:
   - target: kl.VfsNet
     id: kl.VfsNet
-@INIT_Forte_ENTITY_CONNECTIONS+@
+  - target: @ROOTFS_ENTITY@
+    id: @ROOTFS_ENTITY@
+  - target: forte.Forte
+    id: navigation_connection
+@INIT_Client_ENTITY_CONNECTIONS+@
 
 - name: kl.Ntpd
   path: ntpd
   env:
-    VFS_FILESYSTEM_BACKEND: forte:@ROOTFS_ENTITY@
-    VFS_NETWORK_BACKEND: forte:kl.VfsNet
+    VFS_FILESYSTEM_BACKEND: client:@ROOTFS_ENTITY@
+    VFS_NETWORK_BACKEND: client:kl.VfsNet
   args:
     - "-4"
     - -c
@@ -21,5 +28,9 @@ entities:
   - target: @ROOTFS_ENTITY@
     id: @ROOTFS_ENTITY@   
 @INIT_Ntpd_ENTITY_CONNECTIONS+@
+
+- name: forte.Forte
+@INIT_Forte_ENTITY_CONNECTIONS@
+
 
 @INIT_EXTERNAL_ENTITIES@

@@ -19,8 +19,13 @@ include (platform/options)
 
 include (platform/nk)
 
-nk_build_edl_files (forte_edl_files NK_MODULE "forte" EDL "resources/edl/Forte.edl")
+nk_build_edl_files (forte_controller_edl_files NK_MODULE "forte" EDL "resources/comm_controller/Client.edl")
 
+nk_build_idl_files (forte_forte_idl_files NK_MODULE "forte" IDL "resources/forte/NavigationCommand.idl")
+nk_build_cdl_files (forte_forte_cdl_files IDL_TARGET forte_forte_idl_files NK_MODULE "forte" CDL "resources/forte/NavigationCommand.cdl")
+nk_build_edl_files (forte_forte_edl_files CDL_TARGET forte_forte_cdl_files NK_MODULE "forte" EDL "resources/forte/Forte.edl")
+
+include_directories ("forte/src/modules/abot/rapidjson/include")
 
 if ("${CMAKE_SYSTEM_PROCESSOR}" MATCHES "arm")
     # This command will find the BSP package components
@@ -63,4 +68,6 @@ option (ROOTFS_SDCARD "Use SD card to mount root filesystem" OFF)
 message (STATUS "Use SD card to mount root filesystem - ${ROOTFS_SDCARD}")
 
 add_subdirectory (forte)
+add_subdirectory (communication)
 add_subdirectory (einit)
+

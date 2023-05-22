@@ -14,8 +14,8 @@
 #include "AB_CMDPARSER_gen.cpp"
 #endif
 
-#include "rapidjson/include/rapidjson/document.h"
-#include "rapidjson/include/rapidjson/reader.h"
+#include "rapidjson/document.h"
+#include "rapidjson/reader.h"
 //#include "rapidjson/include/rapidjson/filereadstream.h"
 #include <fstream>
 

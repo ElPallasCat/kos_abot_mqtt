@@ -1,3 +1,4 @@
+
 /* Assigning the execute interface. */
 use trusted._
 
@@ -22,6 +23,7 @@ use EDL kl.drivers.BSP
 use EDL kl.drivers.GPIO
 
 /* EDL descriptions of external (not provided in the SDK) programs. */
+use EDL forte.Client
 use EDL forte.Forte
 
 
@@ -268,6 +270,49 @@ response src = kl.core.Core, dst = kl.VfsSdCardFs
     grant()
 }
 
+/**
+ * Allows the tasks with the echo.Client class to send requests to the KasperskyOS kernel and get
+ * responses. This enables the Subscriber program to use core endpoints.
+ */
+request src = forte.Client, dst = kl.core.Core
+{
+    grant()
+}
+
+response src = kl.core.Core, dst = forte.Client
+{
+    grant()
+}
+
+/**
+ * Allows the tasks with the echo.Client class to send requests
+ * to tasks with the kl.VfsSdCardFs class and get responses.
+ * This enables the Subscriber program to communicate with the VfsSdCardFs program.
+ */
+request src = forte.Client, dst = kl.VfsSdCardFs
+{
+    grant()
+}
+
+response src = kl.VfsSdCardFs, dst = forte.Client
+{
+    grant()
+}
+
+/**
+ * Allows the tasks with the echo.Client class to send requests
+ * to tasks with the kl.VfsRamFs class and get responses.
+ * This enables the Subscriber program to communicate with the VfsRamFs program.
+ */
+request src = forte.Client, dst = kl.VfsRamFs
+{
+    grant()
+}
+
+response src = kl.VfsRamFs, dst = forte.Client
+{
+    grant()
+}
 
 /**
  * Allows the tasks with the kl.rump.Dhcpcd class to send requests
@@ -314,6 +359,20 @@ response src = kl.drivers.RAMDisk, dst = kl.VfsRamFs
     grant()
 }
 
+/**
+ * Allows the tasks with the echo.Client class to send requests
+ * to tasks with the kl.VfsNet class and get responses.
+ * This enables the Subscriber program to communicate with the VfsNet program.
+ */
+request src = forte.Client, dst = kl.VfsNet
+{
+    grant()
+}
+
+response src = kl.VfsNet, dst = forte.Client
+{
+    grant()
+}
 
 /**
  * Allows the tasks with the kl.rump.Dhcpcd class to send requests
@@ -425,18 +484,27 @@ response src = kl.VfsSdCardFs, dst = kl.Ntpd
 }
 
 
+
+/**
+ * Allows the tasks with the Einit class to start the tasks with the echo.NavigationController class.
+ */
 execute src=Einit, dst=forte.Forte
 {
     grant()
 }
 
 
+/**
+ * Allows the tasks with the echo.NavigationController class
+ * to send requests to the KasperskyOS kernel and get responses.
+ * This enables the Client program to use core endpoints.
+ */
 request src=forte.Forte, dst=kl.core.Core
 {
     grant()
 }
 
-response src=kl.core.Core, dst=forte.Forte 
+response src=kl.core.Core, dst=forte.Forte
 {
     grant()
 }
@@ -456,13 +524,17 @@ response src=kl.core.Core, dst=kl.drivers.GPIO
     grant()
 }
 
-
+/**
+ * Allows the tasks with the echo.NavigationController class to send requests
+ * to tasks with the kl.drivers.GPIO class and get responses.
+ * This enables the Client program to communicate with the GPIO driver.
+ */
 request src=forte.Forte, dst=kl.drivers.GPIO
 {
     grant()
 }
 
-response src=kl.drivers.GPIO, dst=forte.Forte 
+response src=kl.drivers.GPIO, dst=forte.Forte
 {
     grant()
 }
@@ -488,7 +560,11 @@ response src=kl.core.Core, dst=kl.drivers.BSP
     grant()
 }
 
-
+/**
+ * Allows the tasks with the echo.NavigationController class to send requests
+ * to tasks with the kl.drivers.BSP class and get responses.
+ * This enables the Client program to communicate with the BSP driver.
+ */
 request src=forte.Forte, dst=kl.drivers.BSP
 {
     grant()
@@ -519,3 +595,18 @@ response src = kl.drivers.GPIO, dst = kl.VfsNet
     grant()
 }
 
+request src=forte.Client,  dst=forte.Forte
+{
+    grant()
+}
+
+response src = forte.Forte, dst = forte.Client
+{
+    grant()
+}
+
+
+response src=echo.NavigationController, dst=echo.Client
+{
+    grant()
+}

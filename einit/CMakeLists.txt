@@ -17,6 +17,7 @@ find_program (NTPD_ENTITY
 # Define the ENTITIES variable with a list of entities.
 set (ENTITIES 
      Forte
+	 Client
      ${precompiled_vfsVfsNet} 
      ${NTPD_ENTITY} ${rump_DHCPCD_ENTITY})
 
