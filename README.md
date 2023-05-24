@@ -3,7 +3,7 @@ Project is forked from https://gitflic.ru/project/slavikmai/deep-forte-on-kos-wi
  
 System scheme in 4diac IDE:      
 
-![System scheme](https://github.com/ElPallasCat/kos_abot_mqtt/commits/master/Screenshot_1.jpg)
+![System scheme](https://github.com/ElPallasCat/kos_abot_mqtt/blob/master/Screenshot_1.jpg)
 To make 4diac project work, some new blocks were added for Forte runtime:
 - AB_COSCMD_RECEIVER - get message by IPC channel from entity with MQTT client. 
 - AB_FORWARD - launch AlphaBot's engines. It will be driving forward for the given duration.
@@ -16,7 +16,7 @@ Project include 2 entities:
 - forte.Forte - Forte app for bot control   
 
 Entity stucture:  
-![Entity scheme](https://github.com/ElPallasCat/kos_abot_mqtt/commits/master/Screenshot_2.jpg)
+![Entity scheme](https://github.com/ElPallasCat/kos_abot_mqtt/blob/master/Screenshot_2.jpg)
 
 
 #### Prerequisites
