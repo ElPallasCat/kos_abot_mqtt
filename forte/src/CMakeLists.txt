@@ -15,6 +15,7 @@
 
 if("${FORTE_ARCHITECTURE}" STREQUAL "kos")
 include (platform/nk)
+add_dependencies (FORTE forte_forte_idl_files forte_forte_edl_files)
 endif()
 
 set(FORTE_EXTERNAL_MODULES_DIRECTORY "" CACHE PATH "Path to a directory with FORTE modules located outside of the FORTE source code")
