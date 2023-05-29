@@ -28,5 +28,3 @@ Before you begin, ensure that you have met the following requirements:
 #### Usage
 To build the example and run the resulting image use the cross-build.sh script.
 
-> Note: *not tested*   
-
